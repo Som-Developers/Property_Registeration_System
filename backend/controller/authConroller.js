@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 
 const registerUser =async (req,res)=>{
+    
     try {
         const {username,email,password}=req.body;
         const user = await User.findOne({email})
@@ -64,9 +65,54 @@ const deleteUser=async(req,res)=>{
     }
 }
 
+const jwt = require("jsonwebtoken");
+
+// Use a secure key and move it to .env in production
+const JWT_SECRET = process.env.JWT_SECRET || 1234;
+
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "Invalid email or password" });
+
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Invalid email or password" });
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id, role: user.role }, 
+      JWT_SECRET,
+      { expiresIn: "1d" } // token valid for 1 day
+    );
+
+    // Respond with token and user info
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      }
+    });
+
+  } catch (error) {
+    console.error("Login Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 module.exports={
     registerUser,
     getUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    loginUser
 }
+
