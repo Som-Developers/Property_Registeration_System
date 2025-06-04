@@ -1,5 +1,5 @@
 const express = require("express");
-const { registerUser, getUser, updateUser, deleteUser, loginUser } = require("../controller/authConroller");
+const { registerUser, getUser, updateUser, deleteUser, loginUser, forgotPassword, resetPassword } = require("../controller/authConroller");
 const { registerUserMiddleware, loginUserMiddleware } = require("../middlewares/userMiddlewares");
 
 const router = express.Router();
@@ -9,5 +9,9 @@ router.get("/:id", getUser);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 router.post("/login",loginUserMiddleware, loginUser);
+
+router.post("/forgot-password", forgotPassword);
+
+router.post("/reset-password/:token", resetPassword);
 
 module.exports = router;
