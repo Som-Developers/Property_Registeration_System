@@ -7,7 +7,7 @@ const registerUserMiddleware = (req, res, next) => {
     }
     next();
 };
-
+//
 const loginUserMiddleware = (req, res, next) => {
     const { error } = loginSchema.validate(req.body);
     if (error) {
