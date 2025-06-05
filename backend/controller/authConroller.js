@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const registerUser =async (req,res)=>{
     
@@ -45,7 +46,7 @@ const updateUser=async(req,res)=>{
         user.username=req.body.username
         user.email=req.body.email
         user.password=req.body.password
-        await user.save()
+
         res.status(200).json(user)
     } catch (error) {
         res.status(500).json({message:error.message})
@@ -64,12 +65,6 @@ const deleteUser=async(req,res)=>{
         res.status(500).json({message:error.message})
     }
 }
-
-const jwt = require("jsonwebtoken");
-
-// Use a secure key and move it to .env in production
-const JWT_SECRET = process.env.JWT_SECRET || 1234;
-
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -85,7 +80,7 @@ const loginUser = async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       { userId: user._id, role: user.role }, 
-      JWT_SECRET,
+      process.env.JWT_SECRET,
       { expiresIn: "1d" } // token valid for 1 day
     );
 
