@@ -16,7 +16,7 @@ const ownerApproval = async (req, res) => {
 
         if (owner.isVerified === true) return res.status(400).json({ success: false, message: "Owner already approved" });
 
-        owner.is_verified = true;
+        owner.isVerified = true;
         await owner.save();
 
         res.status(200).json({ success: true, message: "Owner approved successfully" });
