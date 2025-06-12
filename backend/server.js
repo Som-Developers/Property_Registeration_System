@@ -3,7 +3,7 @@ const app = express();
 const  dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const userRoute = require("./routes/userRoute");
-
+const ownerRoute = require("./routes/ownerRoute");
 // Initialize config
 dotenv.config();
 connectDB();
@@ -15,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/users", userRoute);
+app.use("/api/owners", ownerRoute);
 
 // Basic route
 app.get("/", (req, res) => {

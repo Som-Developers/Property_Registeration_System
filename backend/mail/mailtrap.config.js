@@ -1,8 +1,7 @@
-import { MailtrapClient } from 'mailtrap';
-import dotenv from "dotenv";
+const MailtrapClient = require('mailtrap').MailtrapClient;
+const dotenv = require("dotenv");
 
 dotenv.config();
-
 
 const mailtrapClient = new MailtrapClient({
 	endpoint: process.env.MAILTRAP_ENDPOINT,
