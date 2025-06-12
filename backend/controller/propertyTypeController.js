@@ -1,5 +1,5 @@
 
-
+// Import necessary modules
 // Create Property Type with Duplicate Name Validation
 const createPropertyType = async (req, res) => {
   const { name, description } = req.body;
