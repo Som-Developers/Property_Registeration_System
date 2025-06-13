@@ -1,5 +1,13 @@
 const Property = require("../models/propertyModel");
 const User = require("../models/userModel");
+const { sendApprovalEmail, sendRejectionEmail } = require("../mail/emails");
+const Owner = require("../models/ownerModel");
+
+// In approveProperty
+await sendApprovalEmail(owner.email, property.propertyName);
+
+// In rejectProperty
+await sendRejectionEmail(owner.email, property.propertyName, reason);
 
 const rejectProperty = async (req, res) => {
   try {
