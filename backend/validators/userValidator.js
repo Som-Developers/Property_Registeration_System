@@ -1,27 +1,28 @@
-const Joi = require("joi")
+const Joi = require("joi");
 
-<<<<<<< HEAD
+// Registration validation schema (without role field)
 const registervalidate = Joi.object({
-    username: Joi.string().required(),
-    email: Joi.string().email().required(),
-    password: Joi.string().required()    
-})
-=======
+  username: Joi.string().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().required()
+});
+
+// Registration schema with optional role (used for admin)
 const registerSchema = Joi.object({
   username: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
-  role: Joi.string().valid("user", "admin")  // 👈 add this line
+  role: Joi.string().valid("user", "admin") // optional for admin registration
 });
 
-
+// Login schema
 const loginSchema = Joi.object({
-    email: Joi.string().email().required(),
-    password: Joi.string().required()
+  email: Joi.string().email().required(),
+  password: Joi.string().required()
 });
 
->>>>>>> a63e71589f29cb2165fd5c939b01e3dbfc11f7bf
 module.exports = {
-    registervalidate
-}
-    
+  registervalidate,
+  registerSchema,
+  loginSchema
+};
