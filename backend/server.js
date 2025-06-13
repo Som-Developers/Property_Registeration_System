@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/users", userRoute);
 app.use("/api/owners", ownerRoute);
+app.use("/api/propertyType", propertyTypeRoute);
 
 // Basic route
 app.get("/", (req, res) => {
