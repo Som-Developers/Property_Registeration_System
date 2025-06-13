@@ -4,6 +4,11 @@ const  dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const userRoute = require("./routes/userRoute");
 const ownerRoute = require("./routes/ownerRoute");
+const adminRoute = require("./routes/adminRoute");
+const propertyTypeRoute = require("./routes/propertTypeRoute");
+app.use("/api/admin", adminRoute);
+
+
 // Initialize config
 dotenv.config();
 connectDB();
