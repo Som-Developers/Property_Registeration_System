@@ -18,5 +18,5 @@ const loginUserMiddleware = (req, res, next) => {
 
 module.exports = {
     registerUserMiddleware,
-    // loginUserMiddleware
+    loginUserMiddleware
 };
