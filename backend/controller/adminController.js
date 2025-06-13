@@ -1,10 +1,11 @@
 const Property = require("../models/propertyModel");
 const User = require("../models/userModel");
 
-const approveProperty = async (req, res) => {
+const rejectProperty = async (req, res) => {
   try {
     const adminId = req.user.userId;
     const propertyId = req.params.id;
+    const { reason } = req.body;
 
     const admin = await User.findById(adminId);
     if (!admin || admin.role !== "admin") {
@@ -20,15 +21,23 @@ const approveProperty = async (req, res) => {
       return res.status(400).json({ message: "Property already approved" });
     }
 
-    property.isApproved = true;
+    if (property.isRejected) {
+      return res.status(400).json({ message: "Property already rejected" });
+    }
+
+    property.isRejected = true;
+    property.rejectionReason = reason;
     await property.save();
 
-    res.status(200).json({ message: "Property approved successfully", property });
+    res.status(200).json({ message: "Property rejected successfully", property });
 
   } catch (error) {
-    console.error("Approval Error:", error);
+    console.error("Rejection Error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
-module.exports = { approveProperty };
+module.exports = {
+  approveProperty,
+  rejectProperty
+};
