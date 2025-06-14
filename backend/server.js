@@ -6,6 +6,7 @@ const userRoute = require("./routes/userRoute");
 const ownerRoute = require("./routes/ownerRoute");
 const adminRoute = require("./routes/adminRoute");
 const propertyTypeRoute = require("./routes/propertTypeRoute");
+const propertiesRoute=require("./routes/propertiesRoute")
 app.use("/api/admin", adminRoute);
 
 
@@ -22,6 +23,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/users", userRoute);
 app.use("/api/owners", ownerRoute);
 app.use("/api/propertyType", propertyTypeRoute);
+app.use("/api/properties",propertiesRoute)
+
 
 // Basic route
 app.get("/", (req, res) => {

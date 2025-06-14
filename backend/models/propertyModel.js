@@ -1,13 +1,26 @@
 const mongoose = require("mongoose");
 
 const propertySchema = new mongoose.Schema({
-  propertyName: { type: String, required: true },
+  property_name: { type: String, required: true },    // maps to property_name
   address: { type: String, required: true },
-  areaSize: { type: String, required: true },
-  propertyTypeId: { type: mongoose.Schema.Types.ObjectId, ref: "PropertyType", required: true },
-  ownerId: { type: mongoose.Schema.Types.ObjectId, ref: "Owner", required: true },
-  isApproved: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now }
+  area_size: { type: String, required: true },
+
+  // Foreign keys
+  property_type_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "PropertyType",
+    required: true
+  },
+  owner_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Owner",
+    required: true
+  },
+
+  is_approved: { type: Boolean, default: false },
+
+  // Auto timestamps
+  created_at: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model("Property", propertySchema);
