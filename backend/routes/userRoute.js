@@ -1,19 +1,15 @@
 const express = require("express");
 const { registerUser, getUser, updateUser, deleteUser, loginUser, forgotPassword, resetPassword, getAllUsers, updateUserRole } = require("../controller/authConroller");
-
-const { registerUserMiddleware, loginUserMiddleware } = require("../middlewares/userMiddlewares");
-const roleMiddleware = require("../middlewares/roleMiddleware");
+const { registerUserMiddleware } = require("../middlewares/userMiddlewares");
+const { roleMiddleware } = require("../middlewares/roleMiddleware");
 
 const router = express.Router();
 
 router.post("/register",registerUserMiddleware, registerUser);
-//admin route 
-router.get("/all", roleMiddleware(["admin"]), getAllUsers);
-
 router.get("/:id", getUser);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
-router.post("/login",loginUserMiddleware, loginUser);
+router.post("/login", loginUser);
 
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
