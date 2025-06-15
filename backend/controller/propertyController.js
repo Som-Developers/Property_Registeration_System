@@ -15,8 +15,8 @@ const createProperty = async (req, res) => {
 const getAllProperties = async (req, res) => {
   try {
     const properties = await Property.find()
-      .populate('property_type_id')
-      .populate('owner_id');
+      .populate('property_type')
+      .populate('owner');
     res.json(properties);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -27,8 +27,8 @@ const getAllProperties = async (req, res) => {
 const getPropertyById = async (req, res) => {
   try {
     const property = await Property.findById(req.params.id)
-      .populate('property_type_id')
-      .populate('owner_id');
+      .populate('property_type')
+      .populate('owner');
 
     if (!property) return res.status(404).json({ message: 'Property not found' });
 
@@ -67,10 +67,31 @@ const deleteProperty = async (req, res) => {
   }
 };
 
+const searchProperty = async (req, res) => {
+  try {
+    const {property_type,owner,area_size} = req.query;
+    const query = {};
+    if(property_type){
+      query.property_type = property_type;
+    }
+    if(owner){
+      query.owner = owner;
+    }
+    if(area_size){
+      query.area_size = area_size;
+    }
+    const properties = await Property.find(query);
+    res.json(properties);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 module.exports = {
   createProperty,
   getAllProperties,
   getPropertyById,
   updateProperty,
-  deleteProperty
+  deleteProperty,
+  searchProperty
 };
