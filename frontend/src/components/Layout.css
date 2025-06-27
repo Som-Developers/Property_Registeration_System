@@ -1,0 +1,12 @@
+.nav-link.active {
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+.nav-link {
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #4f46e5;
+}
