@@ -1,5 +1,7 @@
-const { registervalidate } = require("../validators/userValidator");
-
+const {
+  registervalidate,
+  loginSchema
+} = require("../validators/userValidator");
 const registerUserMiddleware = (req, res, next) => {
     const { error } = registervalidate.validate(req.body);
     if (error) {
