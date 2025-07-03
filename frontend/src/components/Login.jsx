@@ -3,12 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { registerUser } from "@/services/api";
+import { loginUser } from "@/services/api";
 import { useNavigate } from 'react-router-dom';
 
-function Register() {
+function Login() {
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
     password: ''
   });
@@ -21,49 +20,49 @@ function Register() {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: value
     }));
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  e.preventDefault();
+  setLoading(true);
+  setError('');
 
-    try {
-      await registerUser(formData);
-      navigate('/login');
-    } catch (err) {
-      const message = err?.response?.data?.message || err.message || 'Registration failed.';
-      setError(message);
-    } finally {
-      setLoading(false);
+  try {
+    const response = await loginUser(formData);
+
+    // ✅ Debug: log response to confirm structure
+    console.log("Full login response:", response);
+
+    if (response.user && response.token) {
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("user", JSON.stringify(response.user));
+      console.log("Logged in user:", response.user);
+
+      navigate('/dashboard');
+    } else {
+      throw new Error("Invalid login response. Missing user or token.");
     }
-  };
+  } catch (err) {
+    const message = err?.response?.data?.message || err.message || 'Login failed.';
+    setError(message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <Card className="w-full max-w-md shadow-md">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader>
-          <CardTitle className="text-center text-xl font-bold">Register User</CardTitle>
+          <CardTitle className="text-center text-xl font-bold text-blue-700">Login</CardTitle>
         </CardHeader>
         <CardContent>
           {error && (
             <div className="text-red-600 text-sm mb-4">{error}</div>
           )}
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                name="username"
-                type="text"
-                placeholder="Enter your username"
-                value={formData.username}
-                onChange={handleChange}
-                required
-              />
-            </div>
             <div>
               <Label htmlFor="email">Email</Label>
               <Input
@@ -86,15 +85,10 @@ function Register() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                minLength={6}
               />
             </div>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={loading}
-            >
-              {loading ? 'Registering...' : 'Register'}
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
         </CardContent>
@@ -103,4 +97,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Login;
