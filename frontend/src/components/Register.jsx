@@ -35,7 +35,6 @@ function Register() {
       password: ''
     }
   });
-
   const onSubmit = async (data) => {
     try {
       const result = await register(data);
@@ -49,10 +48,10 @@ function Register() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <Card className="w-full max-w-md">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <Card className="w-full max-w-md shadow-md">
         <CardHeader>
-          <CardTitle>Register User</CardTitle>
+          <CardTitle className="text-center text-xl font-bold">Register User</CardTitle>
         </CardHeader>
         <CardContent>
           {(error || Object.keys(errors).length > 0) && (
@@ -65,6 +64,7 @@ function Register() {
               <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
+                name="username"
                 type="text"
                 placeholder="Enter your username"
                 {...formRegister('username')}
@@ -73,10 +73,11 @@ function Register() {
                 <div className="text-red-500 text-sm mt-1">{errors.username.message}</div>
               )}
             </div>
-            <div className="space-y-2">
+            <div>
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="Enter your email"
                 {...formRegister('email')}
@@ -85,10 +86,11 @@ function Register() {
                 <div className="text-red-500 text-sm mt-1">{errors.email.message}</div>
               )}
             </div>
-            <div className="space-y-2">
+            <div>
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
+                name="password"
                 type="password"
                 placeholder="Enter your password"
                 {...formRegister('password')}

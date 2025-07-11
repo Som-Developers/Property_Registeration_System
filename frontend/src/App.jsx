@@ -6,12 +6,15 @@ import Properties from './pages/Properties';
 import About from './pages/About';
 import Register from './components/Register';
 import Index from './pages/Index';
+import Dashboard from './pages/Dashboard';
 import Login from './components/Login';
 
 function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="properties" element={<Properties />} />
