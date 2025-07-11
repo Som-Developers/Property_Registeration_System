@@ -19,24 +19,38 @@ import { motion } from "framer-motion";
 function ResetPasswordPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
 
   const { token } = useParams();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
+    try {
+      setIsLoading(true);
 
-    resetPassword(token, password);
-    toast.success("Password reset successful");
-    setPassword("");
-    navigate("/login");
+      if (password !== confirmPassword) {
+        toast.error("Passwords do not match");
+        return;
+      }
+
+      const response = await resetPassword(token, password);
+      if (response.success) {
+        toast.success("Password reset successful");
+        setPassword("");
+        setConfirmPassword("");
+        navigate("/login");
+      } else {
+        alert(response.message || "Failed to reset password.");
+        toast.error(response.message || "Failed to reset password.");
+        setPassword("");
+        setConfirmPassword("");
+      }
+    } catch (error) {
+      console.error("Error to reset password:", error);
+      setIsLoading(false);
+    }
   };
   return (
     <motion.div

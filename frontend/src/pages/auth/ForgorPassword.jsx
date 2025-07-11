@@ -17,7 +17,6 @@ import { toast } from "react-hot-toast";
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -26,13 +25,12 @@ function ForgotPasswordPage() {
       setIsLoading(true);
       const response = await forgotPassword(email);
       if (response.success) {
-        setIsSubmitted(true);
         toast.success("Reset link sent to your email!");
-        setEmail(""); // Clear the email input after successful submission
+        setEmail("");
       } else {
         alert(response.message || "Failed to send reset link.");
         toast.error(response.message || "Failed to send reset link.");
-        setEmail(""); // Clear the email input on failure
+        setEmail("");
       }
     } catch (error) {
       console.error("Error sending reset link:", error);
