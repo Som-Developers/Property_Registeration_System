@@ -6,12 +6,12 @@ const propertySchema = new mongoose.Schema({
   area_size: { type: String, required: true },
 
   // Foreign keys
-  property_type_id: {
+  property_type: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "PropertyType",
     required: true
   },
-  owner_id: {
+  owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Owner",
     required: true

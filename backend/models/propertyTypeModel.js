@@ -12,4 +12,6 @@ const PropertyTypeSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
-module.exports = mongoose.model('PropertyType', PropertyTypeSchema);
+const PropertyType = mongoose.model('PropertyType', PropertyTypeSchema);
+
+module.exports = PropertyType;
