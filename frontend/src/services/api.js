@@ -2,13 +2,14 @@
 import axios from 'axios';
 
 
-export const registerUser = async (userData) => {
-    try {
-        const response = await axios.post(`/api/users/register`, userData);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+const API = axios.create({
+  baseURL: "http://localhost:3000/api",
+  withCredentials: false, // since you're using token in response, not cookie
+});
+
+export const loginUser = async (userData) => {
+  const response = await API.post("/users/login", userData);
+  return response.data; // This is IMPORTANT
 };
 
 export const forgotPassword = async (email) => {
@@ -28,3 +29,15 @@ export const resetPassword = async (token, password) => {
         throw error;
     }
 };
+// ==========================
+// ✅ Auth APIs
+// ==========================
+export const registerUser = (userData) => API.post("/users/register", userData);
+
+// ==========================
+// ✅ Property APIs (User)
+export const getAllProperties = () => API.get("/properties");
+
+// ==========================
+// ✅ Admin APIs
+export const approveProperty = (id) => API.put(`/admin/properties/${id}/approve`);

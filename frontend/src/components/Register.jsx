@@ -1,94 +1,106 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { registerUser } from "@/services/api"
+import { useRegisterMutation } from '../redux/api/userApi'
 import { useNavigate } from 'react-router-dom'
+import * as yup from 'yup'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+
+const schema = yup.object().shape({
+  username: yup.string()
+    .required('Username is required')
+    .min(3, 'Username must be at least 3 characters')
+    .max(20, 'Username must not exceed 20 characters'),
+  email: yup.string()
+    .required('Email is required')
+    .email('Invalid email address'),
+  password: yup.string()
+    .required('Password is required')
+    .min(6, 'Password must be at least 6 characters')
+    .max(30, 'Password must not exceed 30 characters')
+});
 
 function Register() {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [register, { isLoading,error }] = useRegisterMutation();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
+  const { register: formRegister, handleSubmit: formHandleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      username: '',
+      email: '',
+      password: ''
+    }
+  });
+  const onSubmit = async (data) => {
     try {
-      await registerUser(formData);
+      const result = await register(data);
+      if (result.error) {
+        console.error('Registration error:', result.error.data.message);
+      }
       navigate('/login');
-    } catch (err) {
-      setError(err.message || 'Registration failed. Please try again.');
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error('Registration error:', error);
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <Card className="w-full max-w-md">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <Card className="w-full max-w-md shadow-md">
         <CardHeader>
-          <CardTitle>Register User</CardTitle>
+          <CardTitle className="text-center text-xl font-bold">Register User</CardTitle>
         </CardHeader>
         <CardContent>
-          {error && (
-            <div className="text-red-500 text-sm mb-4">{error}</div>
+          {(error || Object.keys(errors).length > 0) && (
+            <div className="text-red-500 text-sm mb-4">
+              {error || 'Please fix the validation errors below'}
+            </div>
           )}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={formHandleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
+                name="username"
                 type="text"
                 placeholder="Enter your username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                required
+                {...formRegister('username')}
               />
+              {errors.username && (
+                <div className="text-red-500 text-sm mt-1">{errors.username.message}</div>
+              )}
             </div>
-            <div className="space-y-2">
+            <div>
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="Enter your email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
+                {...formRegister('email')}
               />
+              {errors.email && (
+                <div className="text-red-500 text-sm mt-1">{errors.email.message}</div>
+              )}
             </div>
-            <div className="space-y-2">
+            <div>
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
+                name="password"
                 type="password"
                 placeholder="Enter your password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                minLength={6}
+                {...formRegister('password')}
               />
+              {errors.password && (
+                <div className="text-red-500 text-sm mt-1">{errors.password.message}</div>
+              )}
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Registering...' : 'Register'}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Registering...' : 'Register'}
             </Button>
           </form>
         </CardContent>

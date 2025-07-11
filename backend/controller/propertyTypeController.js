@@ -1,5 +1,4 @@
-
-const PropertyType = require("../models/propertyTypeModel"); // 
+const PropertyType = require("../models/propertyTypeModel");
 
 // Create Property Type with Duplicate Name Validation
 const createPropertyType = async (req, res) => {

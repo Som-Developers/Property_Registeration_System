@@ -7,7 +7,7 @@ const {sendPasswordResetEmail, sendResetSuccessEmail} = require("../mail/emails"
 
 const registerUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body; // ❌ Remove role from body
+    const { username, email, password } = req.body; 
 
     const user = await User.findOne({ email });
     if (user) {
@@ -20,7 +20,7 @@ const registerUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role: "user"  // ✅ Always assign "user" role on public registration
+      role: "user"  
     });
 
     res.status(201).json({ message: "User registered successfully" });
