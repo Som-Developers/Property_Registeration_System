@@ -1,13 +1,37 @@
-import React from 'react';
-import DashboardLayout from '../components/DashboardLayout';
 
-const AdminDashboard = () => {
+import AdminLayout from "@/components/layout.jsx/AdminLayout";
+import StatsCards from "@/components/StatsCards";
+import PropertiesChart from "@/components/PropertyCharts";
+import PendingTables from "@/components/PendingTable";
+import ReportPanel from "@/components/ReportPanel";
+
+export default function AdminDashboard() {
   return (
-    <DashboardLayout role="admin">
-      <h1 className="text-3xl font-bold text-blue-800 mb-4">Admin Dashboard</h1>
-      <p>Welcome, Admin! Use the sidebar to manage properties, users, and more.</p>
-    </DashboardLayout>
-  );
-};
+    <AdminLayout>
+      <div className="space-y-8">
+        {/* Page Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
+            <p className="text-gray-600 mt-1">Welcome back! Here's what's happening with your property registration system.</p>
+          </div>
+          <div className="text-sm text-gray-500">
+            Last updated: {new Date().toLocaleString()}
+          </div>
+        </div>
 
-export default AdminDashboard;
+        {/* Statistics Cards */}
+        <StatsCards />
+
+        {/* Charts Section */}
+        <PropertiesChart />
+
+        {/* Pending Tables */}
+        <PendingTables />
+
+        {/* Report Generation Panel */}
+        <ReportPanel />
+      </div>
+    </AdminLayout>
+  );
+}

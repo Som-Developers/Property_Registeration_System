@@ -8,14 +8,16 @@ import Register from './components/Register';
 import Index from './pages/Index';
 import Dashboard from './pages/Dashboard';
 import Login from './components/Login';
+import UserDashboard from './pages/UserDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<AdminDashboard />} />
 
-        <Route path="/" element={<Layout />}>
+        {/* <Route path="/" element={<UserDashboard />}>
           <Route index element={<Home />} />
           <Route path="properties" element={<Properties />} />
           <Route path="about" element={<About />} />
@@ -23,6 +25,7 @@ function App() {
         <Route path="register" element={<Register />} />
         <Route path="dashboard" element={<Index />} />
         <Route path="login" element={<Login />} />
+        <Route path="admin-dashboard" element={<AdminDashboard />} /> */}
       </Routes>
     </Router>
   );
