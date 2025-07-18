@@ -31,7 +31,7 @@ function Register() {
 
     try {
       await registerUser(formData);
-      navigate('/login');
+      navigate('login');
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {
