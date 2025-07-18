@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { loginUser } from "@/services/api";
+import { loginUser } from "@/services/api"; // your custom API function
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
@@ -26,32 +25,35 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError('');
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
-  try {
-    const response = await loginUser(formData);
+    try {
+      const response = await loginUser(formData);
 
-    // ✅ Debug: log response to confirm structure
-    console.log("Full login response:", response);
+      console.log("Login response:", response);
 
-    if (response.user && response.token) {
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("user", JSON.stringify(response.user));
-      console.log("Logged in user:", response.user);
+      if (response.user && response.token) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
 
-      navigate('/dashboard');
-    } else {
-      throw new Error("Invalid login response. Missing user or token.");
+        // 🔁 Redirect based on role
+        if (response.user.role === "admin") {
+          navigate("/admin-dashboard");
+        } else {
+          navigate("/user-dashboard");
+        }
+      } else {
+        throw new Error("Invalid login response. Missing user or token.");
+      }
+    } catch (err) {
+      const message = err?.response?.data?.message || err.message || 'Login failed.';
+      setError(message);
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    const message = err?.response?.data?.message || err.message || 'Login failed.';
-    setError(message);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -60,9 +62,7 @@ function Login() {
           <CardTitle className="text-center text-xl font-bold text-blue-700">Login</CardTitle>
         </CardHeader>
         <CardContent>
-          {error && (
-            <div className="text-red-600 text-sm mb-4">{error}</div>
-          )}
+          {error && <div className="text-red-600 text-sm mb-4">{error}</div>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="email">Email</Label>
