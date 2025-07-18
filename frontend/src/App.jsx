@@ -11,22 +11,27 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Login from "./components/Login";
+import UserDashboard from "./pages/UserDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="properties" element={<Properties />} />
           <Route path="about" element={<About />} />
         </Route>
-        <Route path="register" element={<Register />} />
+
+        <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="dashboard" element={<Index />} />
-        <Route path="login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/index" element={<Index />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/user-dashboard" element={<UserDashboard />} />
       </Routes>
     </Router>
   );
