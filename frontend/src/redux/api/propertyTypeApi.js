@@ -1,11 +1,14 @@
-import { createApi } from "@reduxjs/toolkit/query";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const propertyTypeApi = createApi({
+  reducerPath: 'propertyTypeApi',
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://property-registeration-system.onrender.com/api/propertyType' }), // Adjust the base URL as needed
+  tagTypes: ['PropertyType', 'PropertyTypeStats'],
   endpoints: (builder) => ({
     // GET /property-types (get all property types with pagination)
     getPropertyTypes: builder.query({
       query: (params) => ({
-        url: '/property-types',
+        url: '/',
         params,
       }),
       providesTags: (result) =>
@@ -17,16 +20,11 @@ export const propertyTypeApi = createApi({
           : [{ type: 'PropertyType', id: 'LIST' }],
     }),
 
-    // GET /property-types/stats (get property type statistics)
-    getPropertyTypeStats: builder.query({
-      query: () => '/property-types/stats',
-      providesTags: ['PropertyTypeStats'],
-    }),
 
     // POST /property-types (create a new property type)
     createPropertyType: builder.mutation({
       query: (newPropertyType) => ({
-        url: '/property-types',
+        url: '/create',
         method: 'POST',
         body: newPropertyType,
       }),

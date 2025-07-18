@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useGetPropertyTypesQuery, useDeletePropertyTypeMutation } from '../../redux/api/propertyTypeApi';
 import CustomDataTable from '@/components/customTable';
 import { createPropertyTypeColumns } from './Columns';
-import PropertyTypeSummaryCards from './PropertyTypeSummaryCards';
+// import PropertyTypeSummaryCards from './PropertyTypeSummaryCards';
 import PropertyTypeFormModal from './PropertyTypeModelForm';
 import { DeleteConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { toast } from 'sonner';
@@ -101,7 +101,7 @@ const PropertyTypeView = () => {
         </p>
       </div>
 
-      <PropertyTypeSummaryCards />
+      {/* <PropertyTypeSummaryCards /> */}
 
       <CustomDataTable
         title="All Property Types"
