@@ -29,7 +29,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Badge } from '@/components/ui/badge';
-import { createPropertyTypeMutation, updatePropertyTypeMutation } from '@/redux/api/propertyTypeApi';
+import { useCreatePropertyTypeMutation, useUpdatePropertyTypeMutation } from '@/redux/api/propertyTypeApi';
 import { useGetPropertyTypesQuery } from '@/redux/api/propertyTypeApi';
 import { createPropertyTypeSchema, updatePropertyTypeSchema } from './schema';
 import { X, User, Plus } from 'lucide-react';
@@ -62,8 +62,8 @@ const PropertyTypeFormModal = ({
     }
   });
 
-  const [createPropertyType, { isLoading: isCreating }] = createPropertyTypeMutation();
-  const [updatePropertyType, { isLoading: isUpdating }] = updatePropertyTypeMutation();
+  const [createPropertyType, { isLoading: isCreating }] = useCreatePropertyTypeMutation();
+  const [updatePropertyType, { isLoading: isUpdating }] = useUpdatePropertyTypeMutation();
   
   // Fetch users for members selection with search
   const { data: usersData, isLoading: usersLoading } = useGetPropertyTypesQuery({
@@ -241,4 +241,4 @@ const PropertyTypeFormModal = ({
   );
 };
 
-export default ProjectFormModal; 
+export default PropertyTypeFormModal; 
