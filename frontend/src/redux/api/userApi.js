@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const userApi = createApi({
     reducerPath: "userApi",
     baseQuery: fetchBaseQuery({
-        baseUrl:"https://property-registeration-system.onrender.com/api/users"
+        baseUrl:"http://localhost:3000/api/users"
     }),
     endpoints: (builder)=>({
         register: builder.mutation({
@@ -40,8 +40,21 @@ export const userApi = createApi({
                 method: 'DELETE'
             })
         }),
-
+        forgotPassword: builder.mutation({
+            query: ({email}) => ({
+                url: '/forgot-password',
+                method: 'POST',
+                body: {email}
+            })
+        }),
+        resetPassword: builder.mutation({
+            query: ({token, password}) => ({
+                url: `/reset-password/${token}`,
+                method: 'POST',
+                body: {password}
+            })
+        })
     })
 })
 
-export const { useRegisterMutation, useLoginMutation, useGetUserByIdQuery, useUpdateProfileMutation, useDeleteProfileMutation } = userApi;
+export const { useRegisterMutation, useLoginMutation, useGetUserByIdQuery, useUpdateProfileMutation, useDeleteProfileMutation, useForgotPasswordMutation, useResetPasswordMutation } = userApi;

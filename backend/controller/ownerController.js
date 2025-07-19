@@ -4,25 +4,25 @@ const Owner = require("../models/ownerModel");
 
 const registerOwner = async (req, res) => {
     try {
-        const {fullName,phone,address,govIdProof}=req.body;
-        const currentUser=req.user
+        const { fullName, phone, address, govIdProof } = req.body;
+        const currentUser = req.user
         console.log(currentUser)
-        const owner = await Owner.findOne({phone})
-        if(owner){
-            return res.status(400).json({message:"Owner already exists"})
+        const owner = await Owner.findOne({ phone })
+        if (owner) {
+            return res.status(400).json({ message: "Owner already exists" })
         }
-        const newOwner=await Owner.create({
+        const newOwner = await Owner.create({
             fullName,
             phone,
             address,
             govIdProof,
-            userId:currentUser.id
+            userId: currentUser.id
         })
         // Populate the userId field to include user details
         const populatedOwner = await newOwner.populate('userId')
-        res.status(201).json({message:"Owner registered successfully",owner: populatedOwner})
+        res.status(201).json({ message: "Owner registered successfully", owner: populatedOwner })
     } catch (error) {
-        res.status(500).json({message:error.message})
+        res.status(500).json({ message: error.message })
         console.log(error)
     };
 
@@ -30,65 +30,72 @@ const registerOwner = async (req, res) => {
 
 const getOwner = async (req, res) => {
     try {
-        const {id} =req.params;
-        const owner=await Owner.findById(id)
-        if(!owner){
-            return res.status(404).json({message:"Owner not found"})
+        const { id } = req.params;
+        const owner = await Owner.findById(id)
+        if (!owner) {
+            return res.status(404).json({ message: "Owner not found" })
         }
-        res.status(200).json({message:"Owner found successfully",owner})
+        res.status(200).json({ message: "Owner found successfully", owner })
     } catch (error) {
-        res.status(500).json({message:error.message})
+        res.status(500).json({ message: error.message })
     }
 }
 
 const getAllOwner = async (req, res) => {
     try {
-        const owner=await Owner.find()
-        if(!owner){
-            return res.status(404).json({message:"Owner not found"})
+        const owners = await Owner.find().populate('userId', 'email username')
+        if (!owners) {
+            return res.status(404).json({ message: "Owner not found" })
         }
-        res.status(200).json({message:"Owner found successfully",owner})
+
+        const formattedOwners = owners.map(owner => ({
+            id: owner._id,
+            name: owner.name || owner.userId?.username || "N/A",
+            email: owner.userId?.email || "N/A",
+            status: owner.isVerified,
+        }));
+
+        res.status(200).json({ message: "Owner found successfully", owner: formattedOwners })
     } catch (error) {
-        res.status(500).json({message:error.message})
+        res.status(500).json({ message: error.message })
     }
 }
 
 const updateOwner = async (req, res) => {
     try {
-        const {id} =req.params;
-        const owner=await Owner.findById(id)
-        if(!owner){
-            return res.status(404).json({message:"Owner not found"})
+        const { id } = req.params;
+        const owner = await Owner.findById(id)
+        if (!owner) {
+            return res.status(404).json({ message: "Owner not found" })
         }
-        owner.fullName=req.body.fullName
-        owner.phone=req.body.phone
-        owner.address=req.body.address
-        owner.govIdProof=req.body.govIdProof
+        owner.fullName = req.body.fullName
+        owner.phone = req.body.phone
+        owner.address = req.body.address
+        owner.govIdProof = req.body.govIdProof
         await owner.save()
-        res.status(200).json({message:"Owner updated successfully",owner})
+        res.status(200).json({ message: "Owner updated successfully", owner })
     } catch (error) {
-        res.status(500).json({message:error.message})
+        res.status(500).json({ message: error.message })
     }
 }
 
 const deleteOwner = async (req, res) => {
     try {
-        const {id} =req.params;
-        const owner=await Owner.findByIdAndDelete(id)
-        if(!owner){
-            return res.status(404).json({message:"Owner not found"})
+        const { id } = req.params;
+        const owner = await Owner.findByIdAndDelete(id)
+        if (!owner) {
+            return res.status(404).json({ message: "Owner not found" })
         }
-        res.status(200).json({message:"Owner deleted successfully"})
+        res.status(200).json({ message: "Owner deleted successfully" })
     } catch (error) {
-        res.status(500).json({message:error.message})
+        res.status(500).json({ message: error.message })
     }
 }
 
-module.exports={
+module.exports = {
     registerOwner,
     getOwner,
     getAllOwner,
     updateOwner,
     deleteOwner
 }
-    
