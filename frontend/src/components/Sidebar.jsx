@@ -46,6 +46,7 @@ import {
 const Sidebar = ({ isOpen, onToggle }) => {
   const navigationItems = [
     { name: 'Dashboard', path: '/', icon: Home },
+    { name: 'Property Types', path: '/property-types', icon: Plus },
     { name: 'Register Property', path: '/register-property', icon: Plus },
     { name: 'My Properties', path: '/my-properties', icon: Building },
     { name: 'Owner Registration', path: '/owner-registration', icon: UserPlus },
