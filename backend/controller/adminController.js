@@ -44,22 +44,22 @@ const approveProperty = async (req, res) => {
 
 const approveOwner = async (req, res) => {
   try {
-    const adminId = req.userId;
+const adminId = req.user.userId; // ✅ Correct access to token's user ID
 
     const admin = await User.findById(adminId);
     if (!admin) return res.status(404).json({ success: false, message: "Admin not found" });
 
     if (admin.role !== "admin") return res.status(400).json({ success: false, message: "Unauthorized access" });
 
-    const userId = req.params.id;
+     const ownerId = req.params.id;
 
-    const user = await User.findById(userId);
-    if (!user) return res.status(400).json({ success: false, message: "User not found" });
-
-    const owner = await Owner.findOne({ userId: user._id });
+    const owner = await Owner.findById(ownerId);
     if (!owner) return res.status(400).json({ success: false, message: "Owner not found" });
 
-    if (owner.isVerified === true) return res.status(400).json({ success: false, message: "Owner already approved" });
+    const user = await User.findById(owner.userId);
+    if (!user) return res.status(400).json({ success: false, message: "User not found" });
+
+    if (owner.isVerified) return res.status(400).json({ success: false, message: "Owner already approved" });
 
     owner.isVerified = true;
     await owner.save();
@@ -69,9 +69,10 @@ const approveOwner = async (req, res) => {
     res.status(200).json({ success: true, message: "Owner approved successfully" });
 
   } catch (error) {
-    console.log("Error in ownerApproval ", error);
-    res.status(400).json({ success: false, message: "Internal server error" });
+    console.log("Error approving owner:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
 
 module.exports = { approveProperty, approveOwner };

@@ -24,7 +24,9 @@ const ownerSchema= new mongoose.Schema({
     },
     userId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        ref:"User",
+        required: true, // ✅ Add this to ensure it's never missing
+
     }
 },{timestamps:true})
 

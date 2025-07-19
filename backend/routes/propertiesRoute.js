@@ -1,17 +1,29 @@
-const express = require("express");
-const router = express.Router();
+const express = require("express")
+const router = express.Router()
+const { verifyToken } = require("../middlewares/verifyToken")
 const {
   createProperty,
   getAllProperties,
   getPropertyById,
   updateProperty,
-  deleteProperty
-} = require("../controller/propertyController");
+  deleteProperty,
+  searchProperty,
+  getPropertyTypes,
+  getMyProperties,
+  getOwnerStatus,
+} = require("../controller/propertyController")
 
-router.post("/", createProperty);
-router.get("/", getAllProperties);
-router.get("/:id", getPropertyById);
-router.put("/:id", updateProperty);
-router.delete("/:id", deleteProperty);
+// ✅ Public routes
+router.get("/property-types", getPropertyTypes)
+router.get("/", getAllProperties)
+router.get("/search", searchProperty)
+router.get("/:id", getPropertyById)
 
-module.exports = router;
+// ✅ Protected routes (require authentication)
+router.post("/", verifyToken, createProperty)
+router.get("/my/properties", verifyToken, getMyProperties)
+router.get("/my/owner-status", verifyToken, getOwnerStatus)
+router.put("/:id", updateProperty)
+router.delete("/:id", deleteProperty)
+
+module.exports = router
