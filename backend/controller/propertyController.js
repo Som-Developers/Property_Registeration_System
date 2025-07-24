@@ -11,13 +11,35 @@ const createProperty = async (req, res) => {
   }
 };
 
-// Get all properties
+// Get all properties with pagination
 const getAllProperties = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // Get total count
+    const total = await Property.countDocuments();
+    const totalPages = Math.ceil(total / limit);
+
+    // Get paginated data
     const properties = await Property.find()
       .populate('property_type')
-      .populate('owner');
-    res.json(properties);
+      .populate('owner')
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      data: {
+        docs: properties,
+        total,
+        page,
+        limit,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
