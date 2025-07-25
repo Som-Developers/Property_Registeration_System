@@ -13,34 +13,38 @@ import { CheckCircle, XCircle, Eye, Download } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 import { useGetAllOwnersQuery } from "../redux/api/ownerApi";
-import { useApproveOwnerMutation } from "../redux/api/adminApi";
+import { useGetPropertyTypesQuery } from "../redux/api/propertyTypeApi";
+import {
+  useApproveOwnerMutation,
+  useApprovePropertyMutation,
+} from "../redux/api/adminApi";
 
-const pendingProperties = [
-  {
-    id: "PR001",
-    propertyType: "Residential",
-    owner: "John Smith",
-    location: "Downtown District",
-    submittedDate: "2024-01-15",
-    status: "Under Review",
-  },
-  {
-    id: "PR002",
-    propertyType: "Commercial",
-    owner: "ABC Corp",
-    location: "Business Center",
-    submittedDate: "2024-01-14",
-    status: "Documents Pending",
-  },
-  {
-    id: "PR003",
-    propertyType: "Industrial",
-    owner: "XYZ Industries",
-    location: "Industrial Zone",
-    submittedDate: "2024-01-13",
-    status: "Under Review",
-  },
-];
+// const pendingProperties = [
+//   {
+//     id: "PR001",
+//     propertyType: "Residential",
+//     owner: "John Smith",
+//     location: "Downtown District",
+//     submittedDate: "2024-01-15",
+//     status: "Under Review",
+//   },
+//   {
+//     id: "PR002",
+//     propertyType: "Commercial",
+//     owner: "ABC Corp",
+//     location: "Business Center",
+//     submittedDate: "2024-01-14",
+//     status: "Documents Pending",
+//   },
+//   {
+//     id: "PR003",
+//     propertyType: "Industrial",
+//     owner: "XYZ Industries",
+//     location: "Industrial Zone",
+//     submittedDate: "2024-01-13",
+//     status: "Under Review",
+//   },
+// ];
 
 // const pendingOwners = [
 //   {
@@ -71,15 +75,27 @@ const pendingProperties = [
 
 function PendingTables() {
   const { data: owners, isLoading, isError } = useGetAllOwnersQuery();
+  const { data: propertyTypes } = useGetPropertyTypesQuery();
   const [approveOwner] = useApproveOwnerMutation();
+  const [approveProperty] = useApprovePropertyMutation();
 
-  const handleApprove = async (ownerId) => {
+  const handleOwnerApprove = async (ownerId) => {
     try {
       await approveOwner(ownerId);
       toast.success("Owner approved successfully!");
     } catch (error) {
       console.error(error);
       toast.error(error?.data?.message || "Failed to approve owner.");
+    }
+  };
+
+  const handlePropertyApprove = async (propertyId) => {
+    try {
+      await approveProperty(propertyId);
+      toast.success("Property approved successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.data?.message || "Failed to approve property.");
     }
   };
 
@@ -116,7 +132,7 @@ function PendingTables() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {pendingProperties.map((property) => (
+              {propertyTypes.map((property) => (
                 <TableRow key={property.id}>
                   <TableCell className="font-medium">{property.id}</TableCell>
                   <TableCell>{property.propertyType}</TableCell>
@@ -129,7 +145,11 @@ function PendingTables() {
                       <Button size="sm" variant="outline">
                         <Eye className="h-3 w-3" />
                       </Button>
-                      <Button size="sm" variant="default">
+                      <Button
+                        size="sm"
+                        variant="default"
+                        onClick={() => handlePropertyApprove(property._id)}
+                      >
                         <CheckCircle className="h-3 w-3" />
                       </Button>
                       <Button size="sm" variant="destructive">
@@ -185,7 +205,7 @@ function PendingTables() {
                       <Button
                         size="sm"
                         variant="default"
-                        onClick={() => handleApprove(owner._id)}
+                        onClick={() => handleOwnerApprove(owner._id)}
                       >
                         <CheckCircle className="h-3 w-3" />
                       </Button>
