@@ -1,4 +1,3 @@
-// src/pages/OwnerRegistrationPage.jsx
 "use client"
 
 import { useState } from "react"
@@ -9,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css"
 import { useRegisterOwnerMutation } from "@/redux/api/ownerApi"
 import { useDispatch } from "react-redux"
 import { setOwnerId } from "@/redux/slice/ownerSlice"
+import { useGetCurrentUserQuery } from "@/redux/api/userApi"
 
 const OwnerRegistrationPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -19,8 +19,9 @@ const OwnerRegistrationPage = () => {
     govIdProof: "",
   })
 
+  const { data: currentUser } = useGetCurrentUserQuery()
   const [registerOwner, { isLoading }] = useRegisterOwnerMutation()
-const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -35,14 +36,20 @@ const dispatch = useDispatch()
     try {
       const result = await registerOwner(formData).unwrap()
       toast.success("Owner registered successfully")
-          dispatch(setOwnerId(result.owner._id))
-
+      dispatch(setOwnerId(result.owner._id))
       setFormData({ fullName: "", phone: "", address: "", govIdProof: "" })
     } catch (error) {
       const message = error?.data?.message || error?.message || "Registration failed"
       toast.error(`❌ ${message}`)
     }
   }
+
+  // Get initials for the avatar
+  const initials = currentUser?.username
+    ?.split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
 
   return (
     <div className="relative flex min-h-screen bg-gray-50">
@@ -66,11 +73,15 @@ const dispatch = useDispatch()
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
               <div className="hidden sm:block text-right">
-                <p className="text-sm font-medium text-gray-900">John Doe</p>
-                <p className="text-xs text-gray-500">Property Administrator</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {currentUser?.username || "Loading..."}
+                </p>
+                <p className="text-xs text-gray-500 capitalize">
+                  {currentUser?.role || "User"}
+                </p>
               </div>
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm sm:text-base">
-                JD
+                {initials || "U"}
               </div>
             </div>
           </div>

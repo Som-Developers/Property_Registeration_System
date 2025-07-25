@@ -17,13 +17,16 @@ import OwnerRegistrationPage from "./pages/OwnerRegistrationPage";
 import UserDashboard from "./pages/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import PropertyTypeView from './view/propertyType/Index';
+import MyPropertiesPage from "./pages/MyPropertiesPage";
 
 function App() {
   return (
     <Provider store={store}>
       <Router>
         <Routes>
-          <Route path="/" element={<PropertyTypeView />} />
+          {/* ✅ Show Login page first */}
+          <Route path="/" element={<Login />} />
+          
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -31,8 +34,12 @@ function App() {
           <Route path="/dashboard" element={<Index />} />
           <Route path="/user-dashboard" element={<UserDashboard />} />
           <Route path="/register-property" element={<RegisterProperty />} />
+<Route path="/my-properties" element={<MyPropertiesPage />} /> // ✅ SHOULD BE HERE
+
           <Route path="/owner-registration" element={<OwnerRegistrationPage />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/property-type" element={<PropertyTypeView />} /> {/* Moved here */}
+          
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="home" element={<Home />} />
             <Route path="properties" element={<Properties />} />

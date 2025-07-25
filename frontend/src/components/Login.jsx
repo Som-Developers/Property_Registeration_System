@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from 'react-router-dom';
-import { useLoginMutation } from '@/redux/api/authApi';
+import { useLoginMutation } from '@/redux/api/userApi'; // instead of authApi
 
 function Login() {
   const [formData, setFormData] = useState({

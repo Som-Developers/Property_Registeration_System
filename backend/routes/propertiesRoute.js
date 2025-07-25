@@ -12,6 +12,8 @@ const {
   getMyProperties,
   getOwnerStatus,
 } = require("../controller/propertyController")
+const upload = require("../middlewares/upload"); // ✅ Add this
+
 
 // ✅ Public routes
 router.get("/property-types", getPropertyTypes)
@@ -20,7 +22,7 @@ router.get("/search", searchProperty)
 router.get("/:id", getPropertyById)
 
 // ✅ Protected routes (require authentication)
-router.post("/", verifyToken, createProperty)
+router.post("/", verifyToken, upload.single("document"), createProperty); // ✅ Fixed here
 router.get("/my/properties", verifyToken, getMyProperties)
 router.get("/my/owner-status", verifyToken, getOwnerStatus)
 router.put("/:id", updateProperty)

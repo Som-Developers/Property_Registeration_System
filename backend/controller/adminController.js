@@ -44,35 +44,30 @@ const approveProperty = async (req, res) => {
 
 const approveOwner = async (req, res) => {
   try {
-const adminId = req.user.userId; // ✅ Correct access to token's user ID
+    const { id } = req.params;
 
-    const admin = await User.findById(adminId);
-    if (!admin) return res.status(404).json({ success: false, message: "Admin not found" });
+    // Find the owner and populate userId
+    const owner = await Owner.findById(id).populate("userId");
 
-    if (admin.role !== "admin") return res.status(400).json({ success: false, message: "Unauthorized access" });
+    if (!owner) {
+      return res.status(404).json({ success: false, message: "Owner not found" });
+    }
 
-     const ownerId = req.params.id;
-
-    const owner = await Owner.findById(ownerId);
-    if (!owner) return res.status(400).json({ success: false, message: "Owner not found" });
-
-    const user = await User.findById(owner.userId);
-    if (!user) return res.status(400).json({ success: false, message: "User not found" });
-
-    if (owner.isVerified) return res.status(400).json({ success: false, message: "Owner already approved" });
+    // Optional: You can verify the user reference exists
+    if (!owner.userId) {
+      return res.status(404).json({ success: false, message: "User not found in owner record" });
+    }
 
     owner.isVerified = true;
     await owner.save();
 
-    await sendApproveOwnerSuccess(user.email);
-
-    res.status(200).json({ success: true, message: "Owner approved successfully" });
-
+    res.status(200).json({ success: true, message: "Owner approved successfully", owner });
   } catch (error) {
-    console.log("Error approving owner:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.error("Approve Owner Error:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 
 module.exports = { approveProperty, approveOwner };

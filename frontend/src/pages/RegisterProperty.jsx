@@ -2,16 +2,22 @@
 
 import { useState } from "react"
 import { Menu } from "lucide-react"
-// Try using the @ alias instead of relative paths
 import Sidebar from "@/components/Sidebar"
 import PropertyRegistrationForm from "@/components/PropertyRegistrationForm"
+import { useGetCurrentUserQuery } from "@/redux/api/userApi"
 
 const RegisterProperty = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen)
-  }
+  const { data: currentUser } = useGetCurrentUserQuery()
+
+  // Generate user initials
+  const initials = currentUser?.username
+    ?.split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
 
   return (
     <div className="relative flex min-h-screen bg-gray-50">
@@ -35,11 +41,15 @@ const RegisterProperty = () => {
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
               <div className="hidden sm:block text-right">
-                <p className="text-sm font-medium text-gray-900">John Doe</p>
-                <p className="text-xs text-gray-500">Property Administrator</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {currentUser?.username || "Loading..."}
+                </p>
+                <p className="text-xs text-gray-500 capitalize">
+                  {currentUser?.role || "User"}
+                </p>
               </div>
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm sm:text-base">
-                JD
+                {initials || "U"}
               </div>
             </div>
           </div>

@@ -6,55 +6,42 @@ const PropertyType = require("../models/propertyTypeModel")
 const createProperty = async (req, res) => {
   try {
     const { property_name, address, area_size, property_type, description } = req.body
-    const currentUser = req.user // From JWT token
+    const file = req.file
+    const currentUser = req.user
 
-    console.log("Creating property for user:", currentUser.id)
-
-    // ✅ Find owner and check if verified
     const owner = await Owner.findOne({ userId: currentUser.id })
-    if (!owner) {
-      return res.status(404).json({
-        message: "Owner profile not found. Please register as owner first.",
-        needsOwnerRegistration: true,
-      })
-    }
+    if (!owner) return res.status(404).json({ message: "Owner profile not found" })
+    if (!owner.isVerified) return res.status(403).json({ message: "Owner not yet verified" })
 
-    // ✅ Check if owner is verified by admin
-    if (!owner.isVerified) {
-      return res.status(403).json({
-        message: "Your owner profile is pending admin approval. Please wait for verification.",
-        ownerStatus: "pending",
-      })
-    }
-
-    // ✅ Verify property type exists
     const propertyTypeExists = await PropertyType.findById(property_type)
-    if (!propertyTypeExists) {
-      return res.status(404).json({ message: "Invalid property type selected" })
-    }
+    if (!propertyTypeExists) return res.status(404).json({ message: "Invalid property type" })
 
-    // ✅ Create property with verified owner
     const newProperty = await Property.create({
       property_name,
       address,
       area_size,
       property_type,
-      owner: owner._id, // Use the verified owner's ID
+      owner: owner._id,
       description: description || "",
-      is_approved: false, // Always starts as pending
+      is_approved: false,
+      documents: file
+        ? [
+            {
+              filePath: `/uploads/documents/${file.filename}`,
+            },
+          ]
+        : [],
     })
 
-    // ✅ Return populated data
-    const populatedProperty = await Property.findById(newProperty._id)
-      .populate("property_type", "name description")
-      .populate("owner", "fullName phone")
+    const populated = await Property.findById(newProperty._id)
+      .populate("property_type", "name")
+      .populate("owner", "fullName")
 
     res.status(201).json({
-      message: "Property registered successfully! It's now pending admin approval.",
-      property: populatedProperty,
+      message: "Property created successfully",
+      property: populated,
     })
   } catch (error) {
-    console.error("Property creation error:", error)
     res.status(500).json({ message: error.message })
   }
 }
@@ -101,6 +88,7 @@ const getMyProperties = async (req, res) => {
 const getOwnerStatus = async (req, res) => {
   try {
     const currentUser = req.user
+     const userId = currentUser.id || currentUser._id // ✅ add this fallback
 
     const owner = await Owner.findOne({ userId: currentUser.id })
     if (!owner) {

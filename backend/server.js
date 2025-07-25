@@ -40,6 +40,7 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/uploads/documents", express.static("uploads/documents")); // 👈 Add this line
 
 // Routes
 app.use("/api/users", userRoute);

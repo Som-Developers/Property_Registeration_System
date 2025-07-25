@@ -37,6 +37,10 @@ export const propertyApi = createApi({
       query: () => "/properties",
       providesTags: ["Property"],
     }),
+    // ✅ Get current user's owner status
+getOwnerStatus: builder.query({
+  query: () => "/properties/my/owner-status",
+}),
 
     // Get property by ID
     getPropertyById: builder.query({
@@ -94,4 +98,6 @@ export const {
   useDeletePropertyMutation,
   useSearchPropertiesQuery,
   useUploadDocumentMutation,
+    useGetOwnerStatusQuery, // ✅ Add this
+
 } = propertyApi
