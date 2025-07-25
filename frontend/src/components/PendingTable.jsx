@@ -74,8 +74,17 @@ import {
 // ];
 
 function PendingTables() {
-  const { data: owners, isLoading, isError } = useGetAllOwnersQuery();
-  const { data: propertyTypes } = useGetPropertyTypesQuery();
+  const {
+    data: owners,
+    isLoading: isOwnersLoading,
+    isError: isOwnersError,
+  } = useGetAllOwnersQuery();
+  const {
+    data: propertyTypes,
+    isLoading: isPropertiesLoading,
+    isError: isPropertiesError,
+  } = useGetPropertyTypesQuery();
+
   const [approveOwner] = useApproveOwnerMutation();
   const [approveProperty] = useApprovePropertyMutation();
 
@@ -99,13 +108,8 @@ function PendingTables() {
     }
   };
 
-  if (isLoading)
-    return <p className="text-center py-8">Loading registered owners...</p>;
-
-  if (isError)
-    return (
-      <p className="text-center py-8 text-red-500">Failed to load owners.</p>
-    );
+  if (isOwnersLoading || isPropertiesLoading) return <p>Loading...</p>;
+  if (isOwnersError || isPropertiesError) return <p>Error loading data</p>;
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
@@ -133,8 +137,8 @@ function PendingTables() {
             </TableHeader>
             <TableBody>
               {propertyTypes.map((property) => (
-                <TableRow key={property.id}>
-                  <TableCell className="font-medium">{property.id}</TableCell>
+                <TableRow key={property._id}>
+                  <TableCell className="font-medium">{property._id}</TableCell>
                   <TableCell>{property.propertyType}</TableCell>
                   <TableCell>{property.owner}</TableCell>
                   <TableCell>
@@ -188,8 +192,8 @@ function PendingTables() {
             </TableHeader>
             <TableBody>
               {owners.map((owner) => (
-                <TableRow key={owner.id}>
-                  <TableCell className="font-medium">{owner.id}</TableCell>
+                <TableRow key={owner._id}>
+                  <TableCell className="font-medium">{owner._id}</TableCell>
                   <TableCell>{owner.name}</TableCell>
                   <TableCell>{owner.email}</TableCell>
                   <TableCell>
