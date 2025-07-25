@@ -13,34 +13,38 @@ import { CheckCircle, XCircle, Eye, Download } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 import { useGetAllOwnersQuery } from "../redux/api/ownerApi";
-import { useApproveOwnerMutation } from "../redux/api/adminApi";
+import { useGetPropertyTypesQuery } from "../redux/api/propertyTypeApi";
+import {
+  useApproveOwnerMutation,
+  useApprovePropertyMutation,
+} from "../redux/api/adminApi";
 
-const pendingProperties = [
-  {
-    id: "PR001",
-    propertyType: "Residential",
-    owner: "John Smith",
-    location: "Downtown District",
-    submittedDate: "2024-01-15",
-    status: "Under Review",
-  },
-  {
-    id: "PR002",
-    propertyType: "Commercial",
-    owner: "ABC Corp",
-    location: "Business Center",
-    submittedDate: "2024-01-14",
-    status: "Documents Pending",
-  },
-  {
-    id: "PR003",
-    propertyType: "Industrial",
-    owner: "XYZ Industries",
-    location: "Industrial Zone",
-    submittedDate: "2024-01-13",
-    status: "Under Review",
-  },
-];
+// const pendingProperties = [
+//   {
+//     id: "PR001",
+//     propertyType: "Residential",
+//     owner: "John Smith",
+//     location: "Downtown District",
+//     submittedDate: "2024-01-15",
+//     status: "Under Review",
+//   },
+//   {
+//     id: "PR002",
+//     propertyType: "Commercial",
+//     owner: "ABC Corp",
+//     location: "Business Center",
+//     submittedDate: "2024-01-14",
+//     status: "Documents Pending",
+//   },
+//   {
+//     id: "PR003",
+//     propertyType: "Industrial",
+//     owner: "XYZ Industries",
+//     location: "Industrial Zone",
+//     submittedDate: "2024-01-13",
+//     status: "Under Review",
+//   },
+// ];
 
 // const pendingOwners = [
 //   {
@@ -70,10 +74,21 @@ const pendingProperties = [
 // ];
 
 function PendingTables() {
-  const { data: owners, isLoading, isError } = useGetAllOwnersQuery();
-  const [approveOwner] = useApproveOwnerMutation();
+  const {
+    data: owners,
+    isLoading: isOwnersLoading,
+    isError: isOwnersError,
+  } = useGetAllOwnersQuery();
+  const {
+    data: propertyTypes,
+    isLoading: isPropertiesLoading,
+    isError: isPropertiesError,
+  } = useGetPropertyTypesQuery();
 
-  const handleApprove = async (ownerId) => {
+  const [approveOwner] = useApproveOwnerMutation();
+  const [approveProperty] = useApprovePropertyMutation();
+
+  const handleOwnerApprove = async (ownerId) => {
     try {
       await approveOwner(ownerId);
       toast.success("Owner approved successfully!");
@@ -83,13 +98,18 @@ function PendingTables() {
     }
   };
 
-  if (isLoading)
-    return <p className="text-center py-8">Loading registered owners...</p>;
+  const handlePropertyApprove = async (propertyId) => {
+    try {
+      await approveProperty(propertyId);
+      toast.success("Property approved successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.data?.message || "Failed to approve property.");
+    }
+  };
 
-  if (isError)
-    return (
-      <p className="text-center py-8 text-red-500">Failed to load owners.</p>
-    );
+  if (isOwnersLoading || isPropertiesLoading) return <p>Loading...</p>;
+  if (isOwnersError || isPropertiesError) return <p>Error loading data</p>;
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
@@ -116,9 +136,9 @@ function PendingTables() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {pendingProperties.map((property) => (
-                <TableRow key={property.id}>
-                  <TableCell className="font-medium">{property.id}</TableCell>
+              {propertyTypes.map((property) => (
+                <TableRow key={property._id}>
+                  <TableCell className="font-medium">{property._id}</TableCell>
                   <TableCell>{property.propertyType}</TableCell>
                   <TableCell>{property.owner}</TableCell>
                   <TableCell>
@@ -129,7 +149,11 @@ function PendingTables() {
                       <Button size="sm" variant="outline">
                         <Eye className="h-3 w-3" />
                       </Button>
-                      <Button size="sm" variant="default">
+                      <Button
+                        size="sm"
+                        variant="default"
+                        onClick={() => handlePropertyApprove(property._id)}
+                      >
                         <CheckCircle className="h-3 w-3" />
                       </Button>
                       <Button size="sm" variant="destructive">
@@ -168,8 +192,8 @@ function PendingTables() {
             </TableHeader>
             <TableBody>
               {owners.map((owner) => (
-                <TableRow key={owner.id}>
-                  <TableCell className="font-medium">{owner.id}</TableCell>
+                <TableRow key={owner._id}>
+                  <TableCell className="font-medium">{owner._id}</TableCell>
                   <TableCell>{owner.name}</TableCell>
                   <TableCell>{owner.email}</TableCell>
                   <TableCell>
@@ -185,7 +209,7 @@ function PendingTables() {
                       <Button
                         size="sm"
                         variant="default"
-                        onClick={() => handleApprove(owner._id)}
+                        onClick={() => handleOwnerApprove(owner._id)}
                       >
                         <CheckCircle className="h-3 w-3" />
                       </Button>
