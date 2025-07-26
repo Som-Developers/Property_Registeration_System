@@ -9,22 +9,22 @@ const {
   resetPassword,
   getAllUsers,
   updateUserRole,
+  getCurrentUser,
 } = require("../controller/authConroller");
 
 const { registerUserMiddleware } = require("../middlewares/userMiddlewares");
 const { roleMiddleware } = require("../middlewares/roleMiddleware");
 const { verifyToken } = require("../middlewares/verifyToken");
-const User = require("../models/userModel");
 
 const router = express.Router();
 
-// Public routes
+// ✅ Public routes
 router.post("/register", registerUserMiddleware, registerUser);
 router.post("/login", loginUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 
-// ✅ Place this BEFORE any dynamic `/:id` routes
+// ✅ Protected: Get current user info (logged in)
 router.get("/me", verifyToken, async (req, res) => {
   try {
     const { password, ...userWithoutPassword } = req.user.toObject();
@@ -35,13 +35,13 @@ router.get("/me", verifyToken, async (req, res) => {
   }
 });
 
-// Admin-only
+// ✅ Admin-only routes
 router.get("/all", roleMiddleware(["admin"]), getAllUsers);
 router.patch("/role/:id", roleMiddleware(["admin"]), updateUserRole);
 router.put("/:id", roleMiddleware(["admin"]), updateUser);
 router.delete("/:id", roleMiddleware(["admin"]), deleteUser);
 
-// Admin + user route
+// ✅ Dynamic user route (admin or user)
 router.get("/:id", roleMiddleware(["admin", "user"]), getUser);
 
 module.exports = router;

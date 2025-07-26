@@ -1,33 +1,38 @@
-import { configureStore } from "@reduxjs/toolkit"
-import { setupListeners } from "@reduxjs/toolkit/query"
-import ownerReducer from "./slice/ownerSlice"
+import { configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/query";
 
-// import { authApi } from "./api/authApi"
-import { userApi } from "./api/userApi"
-import { propertyTypeApi } from "./api/propertyTypeApi"
-import { propertyApi } from "./api/propertyApi" // Add this import
-import { ownerApi } from "./api/ownerApi"; // ✅ Add this line
+// Slices
+import ownerReducer from "./slice/ownerSlice";
+
+// APIs
+// import { authApi } from "./api/authApi";
+import { userApi } from "./api/userApi";
+import { ownerApi } from "./api/ownerApi";
+import { adminApi } from "./api/adminApi";
+import { propertyApi } from "./api/propertyApi";
+import { propertyTypeApi } from "./api/propertyTypeApi";
 
 export const store = configureStore({
   reducer: {
-        owner: ownerReducer, // ✅ Add this line
+    owner: ownerReducer, // ✅ Local slice reducer
 
     // [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
+    [ownerApi.reducerPath]: ownerApi.reducer,
+    [adminApi.reducerPath]: adminApi.reducer,
+    [propertyApi.reducerPath]: propertyApi.reducer,
     [propertyTypeApi.reducerPath]: propertyTypeApi.reducer,
-    [propertyApi.reducerPath]: propertyApi.reducer, // Add this line
-        [ownerApi.reducerPath]: ownerApi.reducer, // ✅ Add this
-
   },
+
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       // authApi.middleware,
       userApi.middleware,
-      propertyTypeApi.middleware,
-      propertyApi.middleware, // Add this line
-            ownerApi.middleware // ✅ Add this
-
+      ownerApi.middleware,
+      adminApi.middleware,
+      propertyApi.middleware,
+      propertyTypeApi.middleware
     ),
-})
+});
 
-setupListeners(store.dispatch)
+setupListeners(store.dispatch);

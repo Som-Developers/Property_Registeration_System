@@ -1,12 +1,12 @@
-// src/redux/api/ownerApi.js
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const ownerApi = createApi({
   reducerPath: "ownerApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3000/api",
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
+    baseUrl: "http://localhost:3000/api", // ✅ Use Render URL in production
+    prepareHeaders: (headers, { getState }) => {
+      // ✅ First try from Redux (optional), then fallback to localStorage
+      const token = getState?.().auth?.token || localStorage.getItem("token");
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
       }
@@ -15,7 +15,7 @@ export const ownerApi = createApi({
   }),
   tagTypes: ["Owner"],
   endpoints: (builder) => ({
-    // Register new owner
+    // ✅ Register Owner
     registerOwner: builder.mutation({
       query: (ownerData) => ({
         url: "/owners/register",
@@ -25,29 +25,29 @@ export const ownerApi = createApi({
       invalidatesTags: ["Owner"],
     }),
 
-    // Get all owners (admin or analytics use)
+    // ✅ Get All Owners
     getAllOwners: builder.query({
       query: () => "/owners",
       providesTags: ["Owner"],
     }),
 
-    // Get single owner by ID
+    // ✅ Get Owner By ID
     getOwnerById: builder.query({
       query: (id) => `/owners/${id}`,
       providesTags: (result, error, id) => [{ type: "Owner", id }],
     }),
 
-    // Update owner info
+    // ✅ Update Owner
     updateOwner: builder.mutation({
-      query: ({ id, ...updatedData }) => ({
+      query: ({ id, ...updateData }) => ({
         url: `/owners/${id}`,
         method: "PUT",
-        body: updatedData,
+        body: updateData,
       }),
       invalidatesTags: (result, error, { id }) => [{ type: "Owner", id }],
     }),
 
-    // Delete owner
+    // ✅ Delete Owner
     deleteOwner: builder.mutation({
       query: (id) => ({
         url: `/owners/${id}`,

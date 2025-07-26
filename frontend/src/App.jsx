@@ -18,6 +18,8 @@ import UserDashboard from "./pages/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import PropertyTypeView from './view/propertyType/Index';
 import MyPropertiesPage from "./pages/MyPropertiesPage";
+import VerifyOwners from "./pages/verify-owners";
+import ApproveProperties from "./pages/ApproveProperties page";
 
 function App() {
   return (
@@ -34,7 +36,7 @@ function App() {
           <Route path="/dashboard" element={<Index />} />
           <Route path="/user-dashboard" element={<UserDashboard />} />
           <Route path="/register-property" element={<RegisterProperty />} />
-<Route path="/my-properties" element={<MyPropertiesPage />} /> // ✅ SHOULD BE HERE
+   <Route path="/my-properties" element={<MyPropertiesPage />} /> // ✅ SHOULD BE HERE
 
           <Route path="/owner-registration" element={<OwnerRegistrationPage />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
@@ -44,6 +46,9 @@ function App() {
             <Route path="home" element={<Home />} />
             <Route path="properties" element={<Properties />} />
             <Route path="about" element={<About />} />
+              <Route path="verify-owners" element={<VerifyOwners />} /> {/* ✅ Add this line */}
+               <Route path="approve-properties" element={<ApproveProperties />} /> {/* ✅ Add this line */}
+
           </Route>
         </Routes>
       </Router>

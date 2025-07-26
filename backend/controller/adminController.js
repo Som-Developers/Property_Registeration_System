@@ -3,45 +3,38 @@ const User = require("../models/userModel");
 const Owner = require("../models/ownerModel");
 
 const { sendApproveOwnerSuccess, sendApprovePropertySuccess } = require("../mail/emails");
-
 const approveProperty = async (req, res) => {
   try {
-    const adminId = req.user.userId;
-    const propertyId = req.params.id;
+    const property = await Property.findById(req.params.id).populate("owner", "userId");
 
-    const admin = await User.findById(adminId);
-    if (!admin || admin.role !== "admin") {
-      return res.status(403).json({ message: "Access denied. Admins only." });
-    }
-
-    const property = await Property.findById(propertyId).populate("owner", "userId"); // Populate the owner field and include userId
     if (!property) {
       return res.status(404).json({ message: "Property not found" });
     }
 
-    if (property.isApproved) {
+    if (property.is_approved) {
       return res.status(400).json({ message: "Property already approved" });
     }
 
-    property.isApproved = true;
+    property.is_approved = true;
     await property.save();
 
-    // check user role
-    const user = await User.findById(property.owner.userId); // Populate the owner field and include userId
-    if (!user || user.role !== "user") return res.status(400).json({ message: "Invalid user role" });
+    // ✅ Get user from property.owner.userId and send email
+    // const user = await User.findById(property.owner.userId);
+    // if (user) {
+    //   await sendApprovePropertySuccess(user.email);
+    // }
 
-
-    await sendApprovePropertySuccess(user.email);
-
-
-    res.status(200).json({ message: "Property approved successfully", property });
-
+    res.status(200).json({
+      message: "Property approved successfully",
+      property,
+    });
   } catch (error) {
-    console.error("Approval Error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
-
 const approveOwner = async (req, res) => {
   try {
     const { id } = req.params;

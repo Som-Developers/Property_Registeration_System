@@ -1,12 +1,34 @@
 const express = require("express");
 const { verifyToken } = require("../middlewares/verifyToken");
-const { registerOwner, getOwner, updateOwner, deleteOwner, getAllOwner } = require("../controller/ownerController");
+const { 
+    registerOwner, 
+    getOwner, 
+    updateOwner, 
+    deleteOwner, 
+    getAllOwner, 
+    getOwnerStats 
+} = require("../controller/ownerController");
+
 const router = express.Router();
 
-router.post("/register", verifyToken, registerOwner);
+// Public routes (if any)
+
+// Protected routes (require authentication)
+router.use(verifyToken);
+
+// Owner statistics - must come before /:id to avoid conflict
+router.get("/stats", getOwnerStats);
+
+// Owner CRUD operations
+router.post("/register", registerOwner);
+router.get("/", getAllOwner);
+
+
+// Specific owner operations - must come after specific routes
 router.get("/:id", getOwner);
 router.put("/:id", updateOwner);
 router.delete("/:id", deleteOwner);
-router.get("/", getAllOwner);
+
+// Get all owners - must come after specific routes
 
 module.exports = router;

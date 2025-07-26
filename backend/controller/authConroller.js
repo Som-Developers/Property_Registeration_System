@@ -174,6 +174,45 @@ const forgotPassword = async (req, res) => {
 	}
 };
 
+const getCurrentUser = async (req, res) => {
+  try {
+    // The user is attached to the request by the auth middleware
+    const user = req.user;
+    
+    if (!user) {
+      console.log('No user found in request');
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Fetch fresh user data from the database
+    const freshUser = await User.findById(user._id || user.id).select('-password');
+    
+    if (!freshUser) {
+      console.log('User not found in database');
+      return res.status(404).json({ message: "User not found in database" });
+    }
+    
+    // Return user data
+    const userData = {
+      id: freshUser._id,
+      username: freshUser.username,
+      email: freshUser.email,
+      role: freshUser.role,
+      createdAt: freshUser.createdAt,
+      updatedAt: freshUser.updatedAt
+    };
+    
+    console.log('Returning user data:', userData);
+    res.status(200).json(userData);
+  } catch (error) {
+    console.error('Error in getCurrentUser:', error);
+    res.status(500).json({ 
+      message: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+};
+
 const resetPassword = async (req, res) => {
 	try {
 		const { token } = req.params;
@@ -209,6 +248,7 @@ const resetPassword = async (req, res) => {
 module.exports={
     registerUser,
     getUser,
+    getCurrentUser,
     updateUser,
     getAllUsers,
     deleteUser,

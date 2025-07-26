@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
-baseUrl: "http://localhost:3000/api/users",
+    baseUrl: "http://localhost:3000/api/users",
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
       if (token) {
@@ -52,6 +52,20 @@ baseUrl: "http://localhost:3000/api/users",
         method: "DELETE",
       }),
     }),
+    forgotPassword: builder.mutation({
+      query: ({ email }) => ({
+        url: "/forgot-password",
+        method: "POST",
+        body: { email },
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: ({ token, password }) => ({
+        url: `/reset-password/${token}`,
+        method: "POST",
+        body: { password },
+      }),
+    }),
   }),
 });
 
@@ -59,7 +73,9 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useGetUserByIdQuery,
-  useGetCurrentUserQuery, // ✅ this is what you will now use
+  useGetCurrentUserQuery,
   useUpdateProfileMutation,
   useDeleteProfileMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = userApi;

@@ -3,7 +3,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const propertyTypeApi = createApi({
   reducerPath: 'propertyTypeApi',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://property-registeration-system.onrender.com/api/propertyType' }), // Adjust the base URL as needed
+baseUrl: "http://localhost:3000/api/propertyType"
+   }), // Adjust the base URL as needed
   tagTypes: ['PropertyType', 'PropertyTypeStats'],
   endpoints: (builder) => ({
     // GET /property-types (get all property types with pagination)
