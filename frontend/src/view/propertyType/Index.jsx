@@ -5,7 +5,7 @@ import { createPropertyTypeColumns } from './Columns';
 // import PropertyTypeSummaryCards from './PropertyTypeSummaryCards';
 import PropertyTypeFormModal from './PropertyTypeModelForm';
 import { DeleteConfirmationDialog } from '@/components/ui/confirmation-dialog';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 
 const PropertyTypeView = () => {
   // State management for table
