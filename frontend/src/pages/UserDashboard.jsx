@@ -29,7 +29,7 @@ const UserDashboard = () => {
     .toUpperCase();
 
   return (
-    <div className="relative flex min-h-screen bg-gray-50">
+    <div className="relative flex h-screen bg-gray-50">
       <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} />
 
       {/* Main Content */}

@@ -40,7 +40,7 @@ function App() {
 
           <Route path="/owner-registration" element={<OwnerRegistrationPage />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/property-type" element={<PropertyTypeView />} /> {/* Moved here */}
+          <Route path="/property-types" element={<PropertyTypeView />} /> {/* Moved here */}
           
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="home" element={<Home />} />

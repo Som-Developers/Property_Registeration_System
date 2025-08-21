@@ -30,7 +30,7 @@ function AdminLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex w-full">
+    <div className="h-screen bg-gray-50 flex w-full">
       <AdminSidebar />
       <div className="flex-1 flex flex-col">
         {/* Header */}

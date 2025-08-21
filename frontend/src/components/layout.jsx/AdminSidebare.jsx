@@ -22,7 +22,7 @@ const sidebarItems = [
   },
   {
     title: "Manage Property Types",
-    href: "/admin/property-types",
+    href: "/property-types",
     icon: Building2,
   },
   {
