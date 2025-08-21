@@ -21,6 +21,8 @@ router.get("/stats", getOwnerStats);
 
 // Owner CRUD operations
 router.post("/register", registerOwner);
+router.get("/", getAllOwner);
+
 
 // Specific owner operations - must come after specific routes
 router.get("/:id", getOwner);
@@ -28,6 +30,5 @@ router.put("/:id", updateOwner);
 router.delete("/:id", deleteOwner);
 
 // Get all owners - must come after specific routes
-router.get("/", getAllOwner);
 
 module.exports = router;

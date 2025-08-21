@@ -6,7 +6,6 @@ const API = axios.create({
   baseURL: "http://localhost:3000/api",
   withCredentials: false, // since you're using token in response, not cookie
 });
-
 export const loginUser = async (userData) => {
   const response = await API.post("/users/login", userData);
   return response.data; // This is IMPORTANT

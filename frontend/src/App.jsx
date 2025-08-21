@@ -1,21 +1,58 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import AdminDashboard from './pages/AdminDashboard';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+
+import AdminLayout from "./components/layout.jsx/AdminLayout";
+import Home from "./pages/Home";
+import Properties from "./pages/Properties";
+import About from "./pages/About";
+import Register from "./components/Register";
+import ForgotPassword from "./pages/auth/ForgorPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
+import Index from "./pages/Index";
+import Login from "./components/Login";
+import RegisterProperty from "./pages/RegisterProperty";
+import OwnerRegistrationPage from "./pages/OwnerRegistrationPage";
+import UserDashboard from "./pages/UserDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import PropertyTypeView from './view/propertyType/Index';
-import Properties from './pages/Properties';
-import Register from './components/Register';
-import Dashboard from './pages/Dashboard';
-import UserDashboard from './pages/UserDashboard';
-import Login from './components/Login';
+import MyPropertiesPage from "./pages/MyPropertiesPage";
+import VerifyOwners from "./pages/verify-owners";
+import ApproveProperties from "./pages/ApproveProperties page";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<PropertyTypeView />} />
-      </Routes>        {/* <Route path="/" element={<AdminDashboard />} /> */}
+    <Provider store={store}>
+      <Router>
+        <Routes>
+          {/* ✅ Show Login page first */}
+          <Route path="/" element={<Login />} />
+          
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/dashboard" element={<Index />} />
+          <Route path="/user-dashboard" element={<UserDashboard />} />
+          <Route path="/register-property" element={<RegisterProperty />} />
+   <Route path="/my-properties" element={<MyPropertiesPage />} /> // ✅ SHOULD BE HERE
 
-    </Router>
+          <Route path="/owner-registration" element={<OwnerRegistrationPage />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/property-types" element={<PropertyTypeView />} /> {/* Moved here */}
+          
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="home" element={<Home />} />
+            <Route path="properties" element={<Properties />} />
+            <Route path="about" element={<About />} />
+              <Route path="verify-owners" element={<VerifyOwners />} /> {/* ✅ Add this line */}
+               <Route path="approve-properties" element={<ApproveProperties />} /> {/* ✅ Add this line */}
+
+          </Route>
+        </Routes>
+      </Router>
+    </Provider>
   );
 }
 

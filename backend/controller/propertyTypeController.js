@@ -43,9 +43,28 @@ const getAllPropertyType = async (req, res) => {
     });
   }
 };
+// ✅ Delete property type by ID
+const deletePropertyType = async (req, res) => {
+  const { id } = req.params;
 
-module.exports={
-    createPropertyType,
-    getAllPropertyType
-}
-    
+  try {
+    const propertyType = await PropertyType.findById(id);
+
+    if (!propertyType) {
+      return res.status(404).json({ message: "Property type not found" });
+    }
+
+    await propertyType.deleteOne();
+
+    res.status(200).json({ message: "Property type deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
+module.exports = {
+  createPropertyType,
+  getAllPropertyType,
+  deletePropertyType
+};
+
