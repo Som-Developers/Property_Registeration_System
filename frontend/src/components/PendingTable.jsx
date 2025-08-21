@@ -112,6 +112,7 @@ Status: ${owner.isVerified ? "Verified" : "Pending"}`)
         hasNextPage: false,
         hasPrevPage: false,
       }
+
     }
 
     // Filter only non-approved properties
@@ -327,6 +328,7 @@ Status: ${owner.isVerified ? "Verified" : "Pending"}`)
   const pendingOwnersData = createPendingOwnersData()
   const pendingPropertiesData = createPendingPropertiesData()
 
+
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
       {/* ✅ Properties Table - FULL FEATURED CustomDataTable */}
@@ -382,6 +384,7 @@ Status: ${owner.isVerified ? "Verified" : "Pending"}`)
             searchable={true} // ✅ Enable search
             sortable={true} // ✅ Enable sorting
           />
+
         </CardContent>
       </Card>
     </div>
